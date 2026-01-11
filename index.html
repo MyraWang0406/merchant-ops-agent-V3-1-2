@@ -1,233 +1,865 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 商家智能化工作台 | Merchant Agent OS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <style>
-        body { 
-            background-color: #F7F9FB; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1F2937;
-        }
-        .glass-card {
-            background: #FFFFFF;
-            border: 1px solid rgba(226, 232, 240, 1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .glass-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 25px 30px -10px rgba(0, 0, 0, 0.03);
-            border-color: #1677FF;
-        }
-        .chart-box { height: 200px; width: 100%; }
-        /* 蓝色主按钮样式 */
-        .btn-primary {
-            background-color: #1677FF;
-            transition: background-color 0.2s;
-        }
-        .btn-primary:hover {
-            background-color: #0958d9;
-        }
-        /* 水印样式 */
-        .watermark {
-            pointer-events: none;
-            opacity: 0.6;
-            font-size: 11px;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 商家智能化工作台 | Merchant Agent OS</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <style>
+    :root{
+      --brand:#1677FF;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:rgba(226,232,240,1);
+      --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+              "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",
+              Arial, sans-serif;
+    }
+    html,body{ font-family: var(--font); }
+    *{ font-family: inherit; }
+
+    body{
+      background-color:#F7F9FB;
+      color:var(--text);
+    }
+
+    .glass-card{
+      background:#FFFFFF;
+      border:1px solid var(--border);
+      transition:all .32s cubic-bezier(.175,.885,.32,1.06);
+    }
+    .glass-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 22px 28px -10px rgba(0,0,0,.03);
+      border-color:var(--brand);
+    }
+
+    .btn-primary{
+      background-color:var(--brand);
+      transition:background-color .2s;
+    }
+    .btn-primary:hover{ background-color:#0958d9; }
+
+    /* ✅ 头部：不做额外限宽，直接和页面内容区(max-w-7xl)一致 */
+    .hero-desc{
+      line-height: 1.9;
+      color: rgba(71,85,105,.95);
+    }
+
+    /* ✅ 白底展示区（统一审美） */
+    .chart-shell{
+      height:200px;
+      width:100%;
+      padding:12px;
+      border-radius:18px;
+      background:#FFFFFF;
+      border:1px solid var(--border);
+      box-shadow:0 14px 30px rgba(2,6,23,.04);
+      overflow:hidden;
+    }
+    .chart-fill{ width:100%; height:100%; }
+
+    /* ================= 用研（舆情）必须“字不遮挡/不裁切” ================= */
+    /* 关键：这一块不能 overflow hidden 裁内容，所以单独做一个 shell */
+    .insight-shell{
+      width:100%;
+      padding:12px;
+      border-radius:18px;
+      background:#FFFFFF;
+      border:1px solid var(--border);
+      box-shadow:0 14px 30px rgba(2,6,23,.04);
+      overflow: visible; /* ✅ 不裁字 */
+    }
+    .insight-layout{
+      display:grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap:12px;
+      align-items:stretch;
+    }
+
+    .insight-main{
+      border-radius:16px;
+      border:1px solid rgba(226,232,240,.98);
+      background: rgba(248,250,252,.98);
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      box-shadow:0 12px 24px rgba(2,6,23,.03);
+    }
+    .insight-main-title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(15,23,42,.92);
+    }
+    .insight-main-title i{ width:16px; height:16px; color:var(--brand); }
+
+    .insight-main-list{
+      display:grid;
+      gap:8px;
+    }
+
+    /* ✅ 关键：允许换行、绝不省略、绝不裁切 */
+    .insight-item{
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      padding:10px 10px;
+      border-radius:14px;
+      background:#fff;
+      border:1px solid rgba(226,232,240,.98);
+      box-shadow:0 10px 18px rgba(2,6,23,.03);
+      font-size:12px;
+      font-weight:900;
+      color:rgba(30,41,59,.88);
+      line-height:1.35;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
+    .insight-item i{ width:16px; height:16px; color:var(--brand); flex:0 0 auto; margin-top:1px; }
+
+    .insight-right{
+      border-radius:16px;
+      border:1px solid rgba(226,232,240,.98);
+      background: rgba(248,250,252,.98);
+      padding:12px;
+      box-shadow:0 12px 24px rgba(2,6,23,.03);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .insight-right-head{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .insight-right-ico{
+      width:36px;height:36px;
+      border-radius:14px;
+      background: rgba(22,119,255,.10);
+      border:1px solid rgba(22,119,255,.14);
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .insight-right-ico i{ width:18px;height:18px;color:var(--brand); }
+    .insight-right-title{
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(15,23,42,.92);
+      line-height:1.2;
+    }
+    .insight-right-sub{
+      margin-top:4px;
+      font-size:11px;
+      font-weight:800;
+      color:rgba(100,116,139,.95);
+      line-height:1.35;
+      white-space:normal;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:2px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(226,232,240,.98);
+      box-shadow:0 10px 18px rgba(2,6,23,.03);
+      font-size:11px;
+      font-weight:900;
+      color:rgba(15,23,42,.80);
+      white-space:nowrap;
+    }
+    .chip i{ width:14px;height:14px;color:var(--brand); }
+
+    /* ================= 宣推 Pipeline：清晰可读（窄卡片不挤） ================= */
+    .pipeline-shell{
+      height:200px;
+      width:100%;
+      padding:12px;
+      border-radius:18px;
+      background:#FFFFFF;
+      border:1px solid var(--border);
+      box-shadow:0 14px 30px rgba(2,6,23,.04);
+      overflow:hidden;
+      position:relative;
+    }
+    .pipeline-bg{
+      position:absolute; inset:-40px;
+      background:
+        radial-gradient(closest-side, rgba(22,119,255,.12), transparent 70%),
+        radial-gradient(closest-side, rgba(236,72,153,.10), transparent 65%),
+        radial-gradient(closest-side, rgba(16,185,129,.10), transparent 70%);
+      opacity:.9;
+    }
+
+    /* ✅ 改成竖向时间线：在 1/3 宽度卡片也能看清 */
+    .pipeline-steps{
+      position:relative;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .step{
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(226,232,240,.98);
+      border-radius:16px;
+      padding:10px 12px;
+      box-shadow:0 14px 22px rgba(2,6,23,.05);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-width:0;
+    }
+
+    .step-ico{
+      width:32px;height:32px;
+      border-radius:14px;
+      background: rgba(22,119,255,.10);
+      border:1px solid rgba(22,119,255,.14);
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .step-ico i{ width:18px;height:18px;color:var(--brand); }
+
+    .step-text{ min-width:0; }
+    .step-title{
+      font-size:13px;
+      font-weight:1000;
+      color:rgba(15,23,42,.92);
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .step-sub{
+      margin-top:3px;
+      font-size:10px;
+      font-weight:800;
+      color:rgba(100,116,139,.95);
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .arrow{
+      align-self:center;
+      width:26px;height:26px;
+      border-radius:999px;
+      background: rgba(15,23,42,.04);
+      border:1px solid rgba(226,232,240,.9);
+      box-shadow:0 10px 18px rgba(2,6,23,.03);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .arrow i{ width:16px;height:16px;color:rgba(37,99,235,.8); }
+
+    /* ================= 客服 / 标签 / 水印 ================= */
+    .service-subcard{
+      background:#fff;
+      border:1px solid rgba(226,232,240,1);
+      border-radius:18px;
+      padding:16px;
+      transition: all .2s;
+    }
+    .service-subcard:hover{
+      border-color: rgba(22,119,255,.45);
+      box-shadow:0 14px 26px rgba(2,6,23,.05);
+      transform: translateY(-2px);
+    }
+
+    .mini-shell{
+      height:160px;
+      width:100%;
+      padding:10px;
+      border-radius:18px;
+      background:#FFFFFF;
+      border:1px solid rgba(226,232,240,1);
+      box-shadow:0 12px 24px rgba(2,6,23,.04);
+      overflow:hidden;
+    }
+    .mini-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .mini-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+      flex-wrap:wrap;
+    }
+    .mini-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(248,250,252,.98);
+      border:1px solid rgba(226,232,240,.95);
+      font-size:10px;
+      font-weight:1000;
+      color:rgba(15,23,42,.72);
+      white-space:nowrap;
+    }
+    .mini-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      justify-content:flex-end;
+    }
+
+    .chat{
+      height: calc(100% - 34px);
+      border-radius:14px;
+      background:rgba(248,250,252,.95);
+      border:1px solid rgba(226,232,240,.95);
+      padding:10px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .msg-row{ display:flex; }
+    .msg{
+      max-width:84%;
+      padding:8px 10px;
+      border-radius:14px;
+      font-size:11px;
+      font-weight:900;
+      line-height:1.5;
+      border:1px solid rgba(226,232,240,.95);
+      box-shadow:0 10px 18px rgba(2,6,23,.03);
+    }
+    .msg.user{
+      margin-left:auto;
+      background:#fff;
+      color:rgba(15,23,42,.86);
+      border-top-right-radius:6px;
+    }
+    .msg.bot{
+      margin-right:auto;
+      background:rgba(239,246,255,.78);
+      color:rgba(30,64,175,.88);
+      border-top-left-radius:6px;
+    }
+    .hint{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+      font-weight:1000;
+      color:rgba(100,116,139,.95);
+      margin-top:auto;
+    }
+    .hint i{ width:14px; height:14px; color:var(--brand); }
+
+    .service-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      font-weight:1000;
+      color:var(--brand);
+    }
+
+    .tag-real{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+      font-weight:1000;
+      color:#059669;
+      background:rgba(16,185,129,.10);
+      border:1px solid rgba(16,185,129,.18);
+      padding:3px 8px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    /* 水印：保持可读 */
+    .wm-wrap{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      z-index:30;
+      pointer-events:none;
+    }
+    @media (max-width: 768px){
+      .wm-wrap{ display:none; }
+    }
+    .wm-card{
+      width:min(340px, 38vw);
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(15,23,42,.80);
+      border:1px solid rgba(148,163,184,.18);
+      box-shadow:0 18px 42px rgba(2,6,23,.18);
+      color:rgba(248,250,252,.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .wm-title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:1000;
+      font-size:13px;
+      margin-bottom:8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      color:rgba(248,250,252,.95);
+    }
+    .wm-icon{
+      width:26px;
+      height:26px;
+      border-radius:12px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .wm-text{
+      font-size:12px;
+      line-height:1.6;
+      color:rgba(226,232,240,.88);
+      font-weight:800;
+    }
+  </style>
 </head>
+
 <body class="min-h-screen pb-24">
-
-    <nav class="sticky top-0 z-50 w-full px-8 py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-[#1677FF] rounded-xl flex items-center justify-center shadow-lg shadow-blue-100">
-                    <i data-lucide="layout-grid" class="text-white w-6 h-6"></i>
-                </div>
-                <div>
-                    <span class="text-xl font-bold text-slate-900 block"> Merchant Operating System </span>
-                    <span class="text-[10px] text-slate-400 tracking-widest font-medium">Copilot with Greater Success</span>
-                </div>
-            </div>
-            <div class="hidden md:flex items-center gap-6">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs font-bold text-slate-700">Agent 控制中心</span>
-                    <span class="text-[10px] text-emerald-500 flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> 系统运行中
-                    </span>
-                </div>
-            </div>
+  <nav class="sticky top-0 z-50 w-full px-8 py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#1677FF] rounded-xl flex items-center justify-center shadow-lg shadow-blue-100">
+          <i data-lucide="sparkles" class="text-white w-6 h-6"></i>
         </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto px-8 pt-16">
-        <div class="mb-14">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">AI 商家工作台</h1>
-            <p class="text-slate-500 mt-3 text-lg max-w-2xl">聚合商家运营AI能力：流量获取（舆情监控、产品用研、GTM及宣推物料制作）经营分析+运营优化（生命周期+用户旅程+权益自动化触达）及客服（C端询单答疑及B端监测优化），初期Copilot进行单点优化，后期数据打通以 Agent OS 形式协作实现运营能力的产品化沉淀。</p>
+        <div>
+          <span class="text-xl font-bold text-slate-900 block"> Merchant Operating System </span>
+          <span class="text-[10px] text-slate-400 tracking-widest font-medium">Copilot with Greater Success</span>
         </div>
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <div class="glass-card rounded-3xl p-8 flex flex-col">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Insight</span>
-                        <h3 class="text-xl font-bold mt-2">用研：舆情&竞品 Copilot</h3>
-                    </div>
-                    <i data-lucide="search" class="text-blue-500 w-6 h-6"></i>
-                </div>
-                <div class="chart-box flex flex-wrap items-center justify-center content-center gap-3 italic">
-                    <span class="text-2xl font-black text-slate-800">电池寿命</span>
-                    <span class="text-lg font-bold text-blue-500">智驾辅助</span>
-                    <span class="text-sm text-slate-400">OTA升级</span>
-                    <span class="text-xl font-bold text-slate-700">充电速度</span>
-                    <span class="text-lg text-blue-400">极氪竞品</span>
-                    <span class="text-sm font-medium text-slate-600">保值率</span>
-                </div>
-                <p class="text-sm text-slate-500 mb-8 leading-relaxed">监控国内外舆情，通过 NLP 聚类关键议题，助力产品规划与 GTM 决策。</p>
-                <a href="https://global-sentiment-copilot.myrawzm0406.online/" target="_blank" class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">查看分析看板</a>
-            </div>
-
-
-            <div class="glass-card rounded-3xl p-8 flex flex-col">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-1 rounded">Assets</span>
-                        <h3 class="text-xl font-bold mt-2">运营分析Copilot：权益触达Agent</h3>
-                    </div>
-                    <i data-lucide="layers" class="text-purple-500 w-6 h-6"></i>
-                </div>
-                <div id="sankeyContainer" class="chart-box"></div>
-                <p class="text-sm text-slate-500 mb-8 leading-relaxed">基于阿里天池开源数据，从用户旅程及生命周期，诊断识别转化漏斗卡点。通过用户历史浏览轨迹动线及历史交易相关行为特征沉淀用户分层模型，配合权益（券、积分、限时折扣、赠礼等其他权益）进行分渠道自动化触达（push edm SMS）。</p>
-                <a href="https://merchant-ops-copilot.myrawzm0406.online/" target="_blank" class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">优化运营策略</a>
-            </div>
-
-            <div class="glass-card rounded-3xl p-8 flex flex-col">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded">Operations</span>
-                        <h3 class="text-xl font-bold mt-2">AI导购：分渠道 Dashboard 看板</h3>
-                    </div>
-                    <i data-lucide="activity" class="text-emerald-500 w-6 h-6"></i>
-                </div>
-                <div id="funnelContainer" class="chart-box"></div>
-                <p class="text-sm text-slate-500 mb-8 leading-relaxed">基于时间衰减模型的多触点广告外投渠道交易正逆向数据归因体系，通过开关窗口实验，及外推广渠道询单及转化数据验证AI导购对转化率增量的贡献</p>
-                <a href="https://psm-did-uplift.pages.dev/" target="_blank" class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">查看外渠道归因</a>
-            </div>
-
-            <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-1">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-pink-600 uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">Creative</span>
-                        <h3 class="text-xl font-bold mt-2">宣推：营销物料 Pipeline</h3>
-                    </div>
-                    <i data-lucide="clapperboard" class="text-pink-500 w-6 h-6"></i>
-                </div>
-                <div class="chart-box bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center">
-                    <i data-lucide="file-type-2" class="w-10 h-10 text-slate-300 mb-3"></i>
-                    <p class="text-[11px] text-slate-400 italic">针对电池寿命痛点<br>自动生成营销脚本与 AIGC 物料</p>
-                </div>
-                <p class="text-sm text-slate-500 mt-6 mb-8 leading-relaxed">根据舆情洞察结论，通过 Notion 脚本实现行业共性素材批量化沉淀。</p>
-                <a href="https://www.notion.so/2da07ac79d6d803b8f88d5ca1b1b7ee2" target="_blank" class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">访问 Notion 选题及脚本中台</a>
-            </div>
-
-            <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-2">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-1 rounded">Service System</span>
-                        <h3 class="text-xl font-bold mt-2">智能客服：智能化响应与预警体系</h3>
-                    </div>
-                    <i data-lucide="messages-square" class="text-indigo-500 w-6 h-6"></i>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-    
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors">
-                        <h4 class="font-bold text-slate-800 text-sm mb-2">C端：保险智能顾问</h4>
-                        <p class="text-[11px] text-slate-500 leading-relaxed mb-4">通过多轮对话引导，降低保险认知门槛，辅助用户进行合规决策。</p>
-                        <a href="https://chatbot-customer-service.myrawzm0406.online/" target="_blank" class="text-xs text-blue-600 font-bold flex items-center gap-1 hover:gap-2 transition-all">
-                            Chatbot 体验 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors">
-                        <h4 class="font-bold text-slate-800 text-sm mb-2">B端：客诉优化 Copilot</h4>
-                        <p class="text-[11px] text-slate-500 leading-relaxed mb-4">胖东来案例：基于 RAG 实现分类、归因、风险预警，服务流程重塑。</p>
-                        <a href="https://customer-feedback.myrawzm0406.online/" target="_blank" class="text-xs text-blue-600 font-bold flex items-center gap-1 hover:gap-2 transition-all">
-                            管理后台入口 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
+      <div class="hidden md:flex items-center gap-6">
+        <div class="flex flex-col items-end">
+          <span class="text-xs font-bold text-slate-700">Agent 控制中心</span>
+          <span class="text-[10px] text-emerald-500 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> 系统运行中
+          </span>
         </div>
-    </main>
+      </div>
+    </div>
+  </nav>
 
-    <div class="fixed bottom-10 right-10 watermark text-right bg-[#020617]/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 text-white shadow-2xl transition-all hover:bg-[#020617]/95">
-        <p class="font-black text-white tracking-widest text-sm mb-1">Merchant Operating System</p>
-        <p class="text-xs text-white/80 font-light">联系作者: myrawzm0406@163.com</p>
-        <p class="text-xs text-white/80 font-light">微信联系: 15301052620</p>
-
+  <main class="max-w-7xl mx-auto px-8 pt-16">
+    <!-- ✅ 头部：不额外限宽，标题和段落同宽（跟 max-w-7xl 一致） -->
+    <div class="mb-14">
+      <h1 class="text-4xl font-black text-slate-900 tracking-tight">AI 商家工作台</h1>
+      <p class="hero-desc mt-3 text-lg max-w-none">
+        聚合商家运营AI能力：流量获取（舆情监控、产品用研、GTM及宣推物料制作）经营分析+运营优化（生命周期+用户旅程+权益自动化触达）
+        及客服（C端询单答疑及B端监测优化），初期Copilot进行单点优化，后期数据打通以 Agent OS 形式协作实现运营能力的产品化沉淀。
+      </p>
     </div>
 
-    <script>
-        // 初始化图标库
-        lucide.createIcons();
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- 1) 用研卡：舆情字不遮挡、不裁切；新能源车下放智能驾驶/智能手机/其他智能家居 -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Insight</span>
+            <h3 class="text-xl font-bold mt-2">用研：舆情&竞品 Copilot</h3>
+          </div>
+          <i data-lucide="search" class="text-blue-500 w-6 h-6"></i>
+        </div>
 
-        // 1. 模拟经营分析漏斗图 (ECharts)
-        const funnelChart = echarts.init(document.getElementById('funnelContainer'));
-        funnelChart.setOption({
-            tooltip: { trigger: 'item', formatter: '{b} : {c}%' },
-            color: ['#1677FF', '#4096ff', '#69b1ff', '#91caff'],
-            series: [{
-                name: '转化率',
-                type: 'funnel',
-                left: '10%', top: 10, bottom: 10, width: '80%',
-                min: 0, max: 100, minSize: '0%', maxSize: '100%',
-                sort: 'descending', gap: 2,
-                label: { show: true, position: 'inside', fontSize: 10, color: '#fff' },
-                data: [
-                    { value: 100, name: '全网曝光' },
-                    { value: 65, name: '咨询转化' },
-                    { value: 38, name: '意向锁单' },
-                    { value: 12, name: '最终交付' }
-                ]
-            }]
-        });
+        <div class="insight-shell">
+          <div class="insight-layout">
+            <!-- 左：商用智能终端 + 3条目的（你说必须保留且看得清） -->
+            <div class="insight-main">
+              <div class="insight-main-title">
+                <i data-lucide="radar"></i>
+                商用智能终端
+              </div>
 
-        // 2. 模拟权益触达桑基图 (ECharts)
-        const sankeyChart = echarts.init(document.getElementById('sankeyContainer'));
-        sankeyChart.setOption({
-            tooltip: { trigger: 'item' },
-            series: [{
-                type: 'sankey',
-                layout: 'none',
-                emphasis: { focus: 'adjacency' },
-                lineStyle: { color: 'gradient', curveness: 0.5 },
-                label: { fontSize: 10, color: '#666' },
-                data: [
-                    { name: '广告预算' }, { name: '分销代理' }, 
-                    { name: '高潜用户' }, { name: '转化完成' }, { name: '流失' }
-                ],
-                links: [
-                    { source: '广告预算', target: '高潜用户', value: 45 },
-                    { source: '分销代理', target: '高潜用户', value: 25 },
-                    { source: '高潜用户', target: '转化完成', value: 20 },
-                    { source: '高潜用户', target: '流失', value: 50 }
-                ]
-            }]
-        });
+              <div class="insight-main-list">
+                <div class="insight-item"><i data-lucide="scan-eye"></i>本品牌舆情监控</div>
+                <div class="insight-item"><i data-lucide="git-compare"></i>竞品机型对比</div>
+                <div class="insight-item"><i data-lucide="users-round"></i>行业用户需求</div>
+              </div>
+            </div>
 
-        // 监听窗口缩放，保持图表自适应
-        window.addEventListener('resize', () => {
-            funnelChart.resize();
-            sankeyChart.resize();
-        });
-    </script>
+            <!-- 右：新能源车，并且把“智能驾驶/智能手机/其他智能家居”放在新能源车下面 -->
+            <div class="insight-right">
+              <div class="insight-right-head">
+                <div class="insight-right-ico"><i data-lucide="car-front"></i></div>
+                <div>
+                  <div class="insight-right-title">新能源车</div>
+                  <div class="insight-right-sub">场景热议：智驾、补能、座舱体验与口碑</div>
+                </div>
+              </div>
+
+              <div class="chips">
+                <span class="chip"><i data-lucide="steering-wheel"></i>智能驾驶</span>
+                <span class="chip"><i data-lucide="smartphone"></i>智能手机</span>
+                <span class="chip"><i data-lucide="home"></i>其他智能家居</span>
+              </div>
+
+              <div class="insight-right-sub">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-500 mt-6 mb-8 leading-relaxed">
+          监控国内外舆情，通过 NLP 聚类关键议题，辅助产品规划与 GTM 决策。
+        </p>
+
+        <a href="https://global-sentiment-copilot.myrawzm0406.online/"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          查看分析看板
+        </a>
+      </div>
+
+      <!-- 2) 运营分析卡（桑基：蓝色系 + 渠道递减） -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-1 rounded">Assets</span>
+            <h3 class="text-xl font-bold mt-2">运营分析Copilot：权益触达Agent</h3>
+          </div>
+          <i data-lucide="layers" class="text-purple-500 w-6 h-6"></i>
+        </div>
+
+        <div class="chart-shell">
+          <div id="sankeyContainer" class="chart-fill"></div>
+        </div>
+
+        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+          基于用户旅程与生命周期诊断漏斗卡点，沉淀用户分层模型，结合权益（券、积分、限时折扣、赠礼等）进行分渠道自动化触达（push/edm/sms）。
+        </p>
+        <a href="https://merchant-ops-copilot.myrawzm0406.online/"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          优化运营策略
+        </a>
+      </div>
+
+      <!-- 3) AI导购卡 -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded">Operations</span>
+            <h3 class="text-xl font-bold mt-2">AI导购：分渠道 Dashboard 看板</h3>
+          </div>
+          <i data-lucide="activity" class="text-emerald-500 w-6 h-6"></i>
+        </div>
+
+        <div class="chart-shell">
+          <div id="funnelContainer" class="chart-fill"></div>
+        </div>
+
+        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+          基于时间衰减的多触点归因，通过开关窗口实验与渠道询单/转化验证 AI 导购对转化率的增量贡献。
+        </p>
+        <a href="https://psm-did-uplift.pages.dev/"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          查看外渠道归因
+        </a>
+      </div>
+
+      <!-- 4) 宣推：只改这里（红框内容） -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-1">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-pink-600 uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">Creative</span>
+            <h3 class="text-xl font-bold mt-2">宣推：营销物料 Pipeline</h3>
+          </div>
+          <i data-lucide="clapperboard" class="text-pink-500 w-6 h-6"></i>
+        </div>
+
+        <div class="pipeline-shell">
+          <div class="pipeline-bg"></div>
+
+          <!-- ✅ 文案不能少：舆情洞察→用户调研→素材选题库→脚本生成 -->
+          <div class="pipeline-steps">
+            <div class="step">
+              <div class="step-ico"><i data-lucide="sparkles"></i></div>
+              <div class="step-text">
+                <div class="step-title">舆情洞察</div>
+                <div class="step-sub">抓取热词 / 投诉点 / 口碑波动</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico"><i data-lucide="clipboard-search"></i></div>
+              <div class="step-text">
+                <div class="step-title">用户调研</div>
+                <div class="step-sub">问卷 / 访谈 / 分层画像 → 形成结论</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico"><i data-lucide="library"></i></div>
+              <div class="step-text">
+                <div class="step-title">素材选题库</div>
+                <div class="step-sub">选题沉淀 / 标签化 / 可复用</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico"><i data-lucide="file-pen-line"></i></div>
+              <div class="step-text">
+                <div class="step-title">脚本生成</div>
+                <div class="step-sub">一键生成脚本 → 多端分发</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-500 mt-6 mb-8 leading-relaxed">
+          从洞察到脚本的闭环：统一选题沉淀与复用，提高产出效率与一致性。
+        </p>
+
+        <a href="https://www.notion.so/2da07ac79d6d803b8f88d5ca1b1b7ee2"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          访问 Notion 选题及脚本中台
+        </a>
+      </div>
+
+      <!-- 5) 智能客服 -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-2">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-1 rounded">Service System</span>
+            <h3 class="text-xl font-bold mt-2">智能客服：智能化响应与预警体系</h3>
+          </div>
+          <i data-lucide="headset" class="text-indigo-500 w-6 h-6"></i>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="service-subcard">
+            <div class="mini-shell mb-4">
+              <div class="mini-top">
+                <div class="mini-left">
+                  <span class="mini-pill"><i data-lucide="messages-square" class="w-3 h-3"></i>引导对话</span>
+                  <span class="mini-pill"><i data-lucide="shield-check" class="w-3 h-3"></i>合规</span>
+                </div>
+                <div class="mini-tags">
+                  <span class="mini-pill"><i data-lucide="shield" class="w-3 h-3"></i>财险</span>
+                  <span class="mini-pill"><i data-lucide="receipt-text" class="w-3 h-3"></i>税险</span>
+                </div>
+              </div>
+
+              <div class="chat">
+                <div class="msg-row"><div class="msg user">我想买车险，应该怎么选？</div></div>
+                <div class="msg-row"><div class="msg bot">我先确认 2 个问题：新车/旧车？是否有贷款或营运需求？</div></div>
+                <div class="msg-row"><div class="msg user">旧车，非营运。</div></div>
+                <div class="msg-row"><div class="msg bot">明白。交强险必选 + 三者/车损/医保外用药按预算组合，我给你 3 套方案。</div></div>
+                <div class="hint"><i data-lucide="sparkles"></i>多轮澄清 → 方案推荐 → 合规提示</div>
+              </div>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm mb-2">C端：保险智能顾问</h4>
+            <p class="text-[11px] text-slate-500 leading-relaxed mb-4">
+              多轮对话引导降低认知门槛，输出可解释方案与合规提示（非真实业务数据展示）。
+            </p>
+            <a href="https://chatbot-customer-service.myrawzm0406.online/"
+               target="_blank"
+               class="service-link">
+              Chatbot 体验 <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+
+          <div class="service-subcard">
+            <div class="mini-shell mb-4">
+              <div class="mini-top">
+                <div class="mini-left">
+                  <span class="mini-pill"><i data-lucide="triangle-alert" class="w-3 h-3"></i>风险预警</span>
+                  <span class="mini-pill"><i data-lucide="route" class="w-3 h-3"></i>流程复盘</span>
+                </div>
+                <div class="mini-tags">
+                  <span class="tag-real"><i data-lucide="check-circle-2" class="w-3 h-3"></i>真实数据（新零售-胖东来）</span>
+                </div>
+              </div>
+
+              <div id="serviceBChart" style="height: calc(100% - 34px); width: 100%;"></div>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm mb-2">B端：客诉优化 Copilot</h4>
+            <p class="text-[11px] text-slate-500 leading-relaxed mb-4">
+              基于 RAG 实现分类、归因、风险预警，辅助服务流程持续优化与 SOP 重塑。
+            </p>
+            <a href="https://customer-feedback.myrawzm0406.online/"
+               target="_blank"
+               class="service-link">
+              管理后台入口 <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+        <a href="https://chatbot-customer-service.myrawzm0406.online/"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          查看客服系统
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- 水印 -->
+  <div class="wm-wrap">
+    <div class="wm-card">
+      <div class="wm-title">
+        <span class="wm-icon"><i data-lucide="sparkles" class="w-4 h-4" style="color:#93c5fd;"></i></span>
+        Merchant OS · 仅供个人原型展示
+      </div>
+      <div class="wm-text">
+        <div>联系：myrawzm0406@163.com · WeChat 15301052620</div>
+        <div>原创作品 · 禁止商用 / 抄袭 / 转卖</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const FONT_FAMILY = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC", Arial, sans-serif';
+
+    // 漏斗图
+    const funnelChart = echarts.init(document.getElementById('funnelContainer'));
+    funnelChart.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: FONT_FAMILY },
+      tooltip: { trigger: 'item', formatter: '{b} : {c}%' },
+      color: ['#1677FF', '#3B82F6', '#60A5FA', '#93C5FD'],
+      series: [{
+        name: '转化率',
+        type: 'funnel',
+        left: '6%', right: '6%', top: 0, bottom: 0, width: '88%',
+        min: 0, max: 100,
+        sort: 'descending', gap: 2,
+        label: { show: true, position: 'inside', fontSize: 10, color: '#fff', fontFamily: FONT_FAMILY },
+        data: [
+          { value: 100, name: '全网曝光' },
+          { value: 65,  name: '咨询转化' },
+          { value: 38,  name: '意向锁单' },
+          { value: 12,  name: '最终交付' }
+        ]
+      }]
+    });
+
+    // 桑基图：蓝色系 + 渠道递减
+    const sankeyChart = echarts.init(document.getElementById('sankeyContainer'));
+    const blue = {
+      a: '#0B5FFF',
+      b: '#1677FF',
+      c: '#3B82F6',
+      d: '#60A5FA',
+      e: '#93C5FD',
+      mid:'#0EA5E9',
+      ok: '#2563EB',
+      loss:'#94A3B8'
+    };
+
+    sankeyChart.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: FONT_FAMILY },
+      tooltip: { trigger: 'item' },
+      series: [{
+        type: 'sankey',
+        left: 0, right: 0, top: 0, bottom: 0,
+        nodeGap: 10,
+        nodeWidth: 14,
+        emphasis: { focus: 'adjacency' },
+        label: { fontSize: 10, color: '#334155', fontWeight: 800, fontFamily: FONT_FAMILY },
+        lineStyle: { color: 'source', opacity: 0.35, curveness: 0.5 },
+        data: [
+          { name: '竞价广告', itemStyle: { color: blue.a } },
+          { name: 'Affiliate', itemStyle: { color: blue.b } },
+          { name: 'KOL', itemStyle: { color: blue.c } },
+          { name: 'ASA', itemStyle: { color: blue.d } },
+          { name: 'ASO', itemStyle: { color: blue.e } },
+          { name: '高潜用户', itemStyle: { color: blue.mid } },
+          { name: '转化完成', itemStyle: { color: blue.ok } },
+          { name: '流失', itemStyle: { color: blue.loss } }
+        ],
+        links: [
+          { source: '竞价广告', target: '高潜用户', value: 50 },
+          { source: 'Affiliate', target: '高潜用户', value: 35 },
+          { source: 'KOL', target: '高潜用户', value: 22 },
+          { source: 'ASA', target: '高潜用户', value: 14 },
+          { source: 'ASO', target: '高潜用户', value: 8 },
+          { source: '高潜用户', target: '转化完成', value: 28 },
+          { source: '高潜用户', target: '流失', value: 101 }
+        ]
+      }]
+    });
+
+    // B端真实数据柱状图
+    const serviceBChart = echarts.init(document.getElementById('serviceBChart'));
+    serviceBChart.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: FONT_FAMILY },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 28, right: 12, top: 14, bottom: 18 },
+      xAxis: {
+        type: 'category',
+        axisLabel: { fontSize: 10, color: '#64748b', fontFamily: FONT_FAMILY },
+        axisLine: { lineStyle: { color: '#e2e8f0' } },
+        data: ['退款','物流','质量','服务','其他']
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { fontSize: 10, color: '#94a3b8', fontFamily: FONT_FAMILY },
+        splitLine: { lineStyle: { color: '#eef2f7' } }
+      },
+      series: [{
+        name: '客诉量',
+        type: 'bar',
+        barWidth: 16,
+        data: [36, 22, 30, 18, 12]
+      }]
+    });
+
+    window.addEventListener('resize', () => {
+      funnelChart.resize();
+      sankeyChart.resize();
+      serviceBChart.resize();
+    });
+  </script>
 </body>
 </html>
