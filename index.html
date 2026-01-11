@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>   
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -426,6 +426,22 @@
       white-space:nowrap;
     }
 
+    /* ✅ 新增：真实案例标签样式 */
+    .case-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      font-weight:1000;
+      color:rgba(15,23,42,.78);
+      background:rgba(15,23,42,.05);
+      border:1px solid rgba(148,163,184,.35);
+      padding:4px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+      line-height:1;
+    }
+
     /* 水印：保持可读 */
     .wm-wrap{
       position:fixed;
@@ -525,7 +541,12 @@
             <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Insight</span>
             <h3 class="text-xl font-bold mt-2">用研：舆情&竞品 Copilot</h3>
           </div>
-          <i data-lucide="search" class="text-blue-500 w-6 h-6"></i>
+
+          <!-- ✅ 右上角加【真实案例】标签 -->
+          <div class="flex flex-col items-end gap-2">
+            <span class="case-badge">真实案例</span>
+            <i data-lucide="search" class="text-blue-500 w-6 h-6"></i>
+          </div>
         </div>
 
         <div class="insight-shell">
@@ -584,7 +605,7 @@
         </div>
 
         <div class="chart-shell">
-          <div id="sankeyContainer" class="chart-fill"></div>
+          <div id="funnelContainer" class="chart-fill"></div>
         </div>
 
         <p class="text-sm text-slate-500 mb-8 leading-relaxed">
@@ -607,13 +628,13 @@
         </div>
 
         <div class="chart-shell">
-          <div id="funnelContainer" class="chart-fill"></div>
+          <div id="sankeyContainer" class="chart-fill"></div>
         </div>
 
         <p class="text-sm text-slate-500 mb-8 leading-relaxed">
           基于时间衰减的多触点归因，通过开关窗口实验与渠道询单/转化验证 AI 导购对转化率的增量贡献。
         </p>
-        <a href="https://psm-did-uplift.pages.dev/"
+        <a href="https://traffic-attribution.myrawzm0406.online/"
            target="_blank"
            class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
           查看外渠道归因
@@ -695,7 +716,12 @@
             <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-1 rounded">Service System</span>
             <h3 class="text-xl font-bold mt-2">智能客服：智能化响应与预警体系</h3>
           </div>
-          <i data-lucide="headset" class="text-indigo-500 w-6 h-6"></i>
+
+          <!-- ✅ 右上角加【真实案例】标签 -->
+          <div class="flex flex-col items-end gap-2">
+            <span class="case-badge">真实案例</span>
+            <i data-lucide="headset" class="text-indigo-500 w-6 h-6"></i>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -749,7 +775,7 @@
 
             <h4 class="font-bold text-slate-900 text-sm mb-2">B端：客诉优化 Copilot</h4>
             <p class="text-[11px] text-slate-500 leading-relaxed mb-4">
-              基于 RAG 实现分类、归因、风险预警，辅助服务流程持续优化与 SOP 重塑。
+              基于NLP + RAG 实现线下门店客诉语义分类、归因、风险预警，助力客服反馈内容优化，及SOP流程优化。
             </p>
             <a href="https://customer-feedback.myrawzm0406.online/"
                target="_blank"
@@ -840,7 +866,7 @@
       tooltip: { trigger: 'item' },
       series: [{
         type: 'sankey',
-        left: 0, right: 0, top: 0, bottom: 0,
+        left: 0, right: 0, topght: 0, bottom: 0,
         nodeGap: 10,
         nodeWidth: 14,
         emphasis: { focus: 'adjacency' },
