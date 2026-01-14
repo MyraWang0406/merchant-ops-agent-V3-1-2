@@ -1,9 +1,9 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 商家智能化工作台 | Merchant Agent OS</title>
+  <title>AI 广告主智能化工作台 | Advertiser Agent OS</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -44,13 +44,11 @@
     }
     .btn-primary:hover{ background-color:#0958d9; }
 
-    /* ✅ 头部：不做额外限宽，直接和页面内容区(max-w-7xl)一致 */
     .hero-desc{
       line-height: 1.9;
       color: rgba(71,85,105,.95);
     }
 
-    /* ✅ 白底展示区（统一审美） */
     .chart-shell{
       height:200px;
       width:100%;
@@ -184,7 +182,7 @@
     }
     .chip i{ width:14px;height:14px;color:var(--brand); }
 
-    /* ================= 宣推 Pipeline：清晰可读（窄卡片不挤） ================= */
+    /* ================= 宣推 Pipeline ================= */
     .pipeline-shell{
       height:200px;
       width:100%;
@@ -237,7 +235,6 @@
     }
     .step-ico i{ width:18px;height:18px;color:var(--brand); }
 
-    /* ✅ 用户调研：人 + 放大镜 组合 icon */
     .ico-stack{
       position:relative;
       width:18px;
@@ -426,7 +423,6 @@
       white-space:nowrap;
     }
 
-    /* ✅ 新增：真实案例标签样式 */
     .case-badge{
       display:inline-flex;
       align-items:center;
@@ -442,7 +438,7 @@
       line-height:1;
     }
 
-    /* 水印：保持可读 */
+    /* 水印 */
     .wm-wrap{
       position:fixed;
       right:14px;
@@ -454,12 +450,11 @@
       .wm-wrap{ display:none; }
     }
 
-    /* ✅✅ 关键修改：让水印卡片“按内容收缩”，减少右侧黑色留白 */
     .wm-card{
       display:inline-block;
-      width: fit-content;                 /* 按内容收缩 */
-      max-width: min(300px, 38vw);        /* 控制最大宽度（原来 340px 更宽） */
-      padding:12px 12px;                  /* 右侧内边距也顺便略收一点 */
+      width: fit-content;
+      max-width: min(300px, 38vw);
+      padding:12px 12px;
       border-radius:14px;
       background:rgba(15,23,42,.80);
       border:1px solid rgba(148,163,184,.18);
@@ -498,6 +493,17 @@
       color:rgba(226,232,240,.88);
       font-weight:800;
     }
+
+    /* ✅ 底部灰条可点击 */
+    .footer-pill{ pointer-events:auto; }
+    .footer-pill a{
+      pointer-events:auto;
+      color: rgba(22,119,255,.95);
+      font-weight: 900;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .footer-pill a:hover{ color:#0958d9; }
   </style>
 </head>
 
@@ -509,7 +515,7 @@
           <i data-lucide="sparkles" class="text-white w-6 h-6"></i>
         </div>
         <div>
-          <span class="text-xl font-bold text-slate-900 block"> Merchant Operating System </span>
+          <span class="text-xl font-bold text-slate-900 block"> Advertiser Operating System </span>
           <span class="text-[10px] text-slate-400 tracking-widest font-medium">Copilot with Greater Success</span>
         </div>
       </div>
@@ -527,22 +533,25 @@
 
   <main class="max-w-7xl mx-auto px-8 pt-16">
     <div class="mb-14">
-      <h1 class="text-4xl font-black text-slate-900 tracking-tight">AI 商家工作台</h1>
+      <h1 class="text-4xl font-black text-slate-900 tracking-tight">AI 广告主工作台</h1>
       <p class="hero-desc mt-3 text-lg max-w-none">
-        聚合商家运营AI能力：流量获取（舆情监控、产品用研、GTM及宣推物料制作）经营分析+运营优化（生命周期+用户旅程+权益自动化触达）
-        及客服（C端询单答疑及B端监测优化），初期Copilot进行单点优化，后期数据打通以 Agent OS 形式协作实现运营能力的产品化沉淀。
+        聚合广告主增长与运营 AI 能力：流量获取（舆情监控、竞品用研、GTM 及宣推物料制作）
+        经营分析 + 运营优化（生命周期 / 用户旅程 / 权益自动化触达）
+        及客服（C端询单答疑与 B 端质检优化）。初期 Copilot 做单点提效，后期数据打通以 Agent OS 形式协作，实现投放与运营能力的产品化沉淀。
       </p>
     </div>
 
+    <!-- ✅ 关键：把“营销物料 Pipeline”移动到“智能客服”后面
+         下面 grid 顺序已按：Insight / Assets / Ops归因 / Ops实验 / ServiceSystem / CreativePipeline 排列 -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Insight -->
       <div class="glass-card rounded-3xl p-8 flex flex-col">
         <div class="flex justify-between items-start mb-6">
           <div>
             <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Insight</span>
             <h3 class="text-xl font-bold mt-2">用研：舆情&竞品 Copilot</h3>
           </div>
-
-          <!-- ✅ 右上角加【真实案例】标签 -->
           <div class="flex flex-col items-end gap-2">
             <span class="case-badge">真实案例</span>
             <i data-lucide="search" class="text-blue-500 w-6 h-6"></i>
@@ -556,7 +565,6 @@
                 <i data-lucide="radar"></i>
                 商用智能终端
               </div>
-
               <div class="insight-main-list">
                 <div class="insight-item"><i data-lucide="scan-eye"></i>本品牌舆情监控</div>
                 <div class="insight-item"><i data-lucide="git-compare"></i>竞品机型对比</div>
@@ -572,13 +580,11 @@
                   <div class="insight-right-sub">场景热议：智驾、补能、座舱体验与口碑</div>
                 </div>
               </div>
-
               <div class="chips">
                 <span class="chip"><i data-lucide="car-front"></i>智能驾驶</span>
                 <span class="chip"><i data-lucide="smartphone"></i>智能手机</span>
                 <span class="chip"><i data-lucide="home"></i>其他智能家居</span>
               </div>
-
               <div class="insight-right-sub"></div>
             </div>
           </div>
@@ -595,6 +601,7 @@
         </a>
       </div>
 
+      <!-- Assets -->
       <div class="glass-card rounded-3xl p-8 flex flex-col">
         <div class="flex justify-between items-start mb-6">
           <div>
@@ -618,6 +625,7 @@
         </a>
       </div>
 
+      <!-- Operations：归因 -->
       <div class="glass-card rounded-3xl p-8 flex flex-col">
         <div class="flex justify-between items-start mb-6">
           <div>
@@ -641,75 +649,60 @@
         </a>
       </div>
 
-      <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-1">
+      <!-- Operations：实验 -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <span class="text-[10px] font-bold text-pink-600 uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">Creative</span>
-            <h3 class="text-xl font-bold mt-2">宣推：营销物料 Pipeline</h3>
+            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded">Operations</span>
+            <h3 class="text-xl font-bold mt-2">投放实验控制台</h3>
           </div>
-          <i data-lucide="clapperboard" class="text-pink-500 w-6 h-6"></i>
+          <i data-lucide="flask-conical" class="text-emerald-500 w-6 h-6"></i>
         </div>
 
-        <div class="pipeline-shell">
-          <div class="pipeline-bg"></div>
+        <div class="chart-shell">
+          <div class="w-full h-full rounded-2xl border border-slate-200/70 bg-slate-50/70 p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex flex-wrap gap-2">
+                <span class="mini-pill"><i data-lucide="play-circle" class="w-3 h-3"></i>运行中</span>
+                <span class="mini-pill"><i data-lucide="shield-alert" class="w-3 h-3"></i>护栏</span>
+                <span class="mini-pill"><i data-lucide="search-check" class="w-3 h-3"></i>诊断</span>
+              </div>
+              <span class="tag-real"><i data-lucide="check-circle-2" class="w-3 h-3"></i>实验平台</span>
+            </div>
 
-          <div class="pipeline-steps">
-            <div class="step">
-              <div class="step-ico"><i data-lucide="sparkles"></i></div>
-              <div class="step-text">
-                <div class="step-title">舆情洞察</div>
-                <div class="step-sub">抓取热词 / 投诉点 / 口碑波动</div>
+            <div class="mt-3 grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-white border border-slate-200/70 p-3 shadow-sm">
+                <div class="text-[10px] font-black text-slate-500">总实验</div>
+                <div class="mt-1 text-xl font-black text-slate-900">24</div>
+              </div>
+              <div class="rounded-2xl bg-white border border-slate-200/70 p-3 shadow-sm">
+                <div class="text-[10px] font-black text-slate-500">关注</div>
+                <div class="mt-1 text-xl font-black text-slate-900">5</div>
+              </div>
+              <div class="rounded-2xl bg-white border border-slate-200/70 p-3 shadow-sm">
+                <div class="text-[10px] font-black text-slate-500">异常</div>
+                <div class="mt-1 text-xl font-black text-rose-600">1</div>
               </div>
             </div>
 
-            <div class="arrow"><i data-lucide="chevron-down"></i></div>
-
-            <div class="step">
-              <div class="step-ico">
-                <span class="ico-stack">
-                  <i data-lucide="user-round"></i>
-                  <span class="badge"><i data-lucide="search"></i></span>
-                </span>
-              </div>
-              <div class="step-text">
-                <div class="step-title">用户调研</div>
-                <div class="step-sub">问卷 / 访谈 / 分层画像 → 形成结论</div>
-              </div>
-            </div>
-
-            <div class="arrow"><i data-lucide="chevron-down"></i></div>
-
-            <div class="step">
-              <div class="step-ico"><i data-lucide="library"></i></div>
-              <div class="step-text">
-                <div class="step-title">素材选题库</div>
-                <div class="step-sub">选题沉淀 / 标签化 / 可复用</div>
-              </div>
-            </div>
-
-            <div class="arrow"><i data-lucide="chevron-down"></i></div>
-
-            <div class="step">
-              <div class="step-ico"><i data-lucide="file-pen-line"></i></div>
-              <div class="step-text">
-                <div class="step-title">脚本生成</div>
-                <div class="step-sub">一键生成脚本 → 多端分发</div>
-              </div>
+            <div class="mt-3 text-[11px] font-extrabold text-slate-500 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i>
+              统一查看实验结果、护栏风险、瓶颈诊断与策略建议
             </div>
           </div>
         </div>
 
-        <p class="text-sm text-slate-500 mt-6 mb-8 leading-relaxed">
-          从洞察到脚本的闭环：统一选题沉淀与复用，提高产出效率与一致性。
+        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+          面向 ADX/SSP/DSP 的实验工作台：指标提升、护栏波动、链路卡点与自动复盘结论统一归档。
         </p>
-
-        <a href="https://www.notion.so/2da07ac79d6d803b8f88d5ca1b1b7ee2"
+        <a href="https://adx-experiment-v2.myrawzm0406.online/"
            target="_blank"
            class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
-          访问 Notion 选题及脚本中台
+          进入实验控制台
         </a>
       </div>
 
+      <!-- ✅ Service System（lg:col-span-2） -->
       <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-2">
         <div class="flex justify-between items-start mb-6">
           <div>
@@ -717,7 +710,6 @@
             <h3 class="text-xl font-bold mt-2">智能客服：智能化响应与预警体系</h3>
           </div>
 
-          <!-- ✅ 右上角加【真实案例】标签 -->
           <div class="flex flex-col items-end gap-2">
             <span class="case-badge">真实案例</span>
             <i data-lucide="headset" class="text-indigo-500 w-6 h-6"></i>
@@ -791,15 +783,89 @@
           查看客服系统
         </a>
       </div>
+
+      <!-- ✅ Creative：营销物料 Pipeline（已移动到智能客服后面） -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col lg:col-span-1">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="text-[10px] font-bold text-pink-600 uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">Creative</span>
+            <h3 class="text-xl font-bold mt-2">宣推：营销物料 Pipeline</h3>
+          </div>
+          <i data-lucide="clapperboard" class="text-pink-500 w-6 h-6"></i>
+        </div>
+
+        <div class="pipeline-shell">
+          <div class="pipeline-bg"></div>
+
+          <div class="pipeline-steps">
+            <div class="step">
+              <div class="step-ico"><i data-lucide="sparkles"></i></div>
+              <div class="step-text">
+                <div class="step-title">舆情洞察</div>
+                <div class="step-sub">抓取热词 / 投诉点 / 口碑波动</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico">
+                <span class="ico-stack">
+                  <i data-lucide="user-round"></i>
+                  <span class="badge"><i data-lucide="search"></i></span>
+                </span>
+              </div>
+              <div class="step-text">
+                <div class="step-title">用户调研</div>
+                <div class="step-sub">问卷 / 访谈 / 分层画像 → 形成结论</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico"><i data-lucide="library"></i></div>
+              <div class="step-text">
+                <div class="step-title">素材选题库</div>
+                <div class="step-sub">选题沉淀 / 标签化 / 可复用</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i data-lucide="chevron-down"></i></div>
+
+            <div class="step">
+              <div class="step-ico"><i data-lucide="file-pen-line"></i></div>
+              <div class="step-text">
+                <div class="step-title">脚本生成</div>
+                <div class="step-sub">一键生成脚本 → 多端分发</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-500 mt-6 mb-8 leading-relaxed">
+          从洞察到脚本的闭环：统一选题沉淀与复用，提高产出效率与一致性。
+        </p>
+
+        <a href="https://www.notion.so/2da07ac79d6d803b8f88d5ca1b1b7ee2"
+           target="_blank"
+           class="mt-auto btn-primary text-white py-3 rounded-2xl text-center font-bold text-sm shadow-md">
+          访问 Notion 选题及脚本中台
+        </a>
+      </div>
+
     </div>
   </main>
 
-  <!-- 底部灰色小字（固定贴底） -->
+  <!-- 底部灰色小字（可点击） -->
   <div class="fixed left-0 right-0 bottom-0 z-20 pointer-events-none">
     <div class="max-w-7xl mx-auto px-8 pb-3">
       <div class="flex justify-center">
-        <p class="text-center text-[12px] text-slate-400 bg-white/60 backdrop-blur px-3 py-1 rounded-full border border-slate-200/60">
-          联系作者：myrawzm0406@163.com 微信15301052620 其他内容（25年8月后停止更新）https://docs.qq.com/doc/DVEtCTWdCc0dsa2pJ
+        <p class="footer-pill text-center text-[12px] text-slate-400 bg-white/60 backdrop-blur px-3 py-1 rounded-full border border-slate-200/60">
+          联系作者：
+          <a href="mailto:myrawzm0406@163.com" target="_blank" rel="noopener">myrawzm0406@163.com</a>
+          · 微信 15301052620 
+          <a href="https://docs.qq.com/doc/DVEtCTWdCc0dsa2pJ" target="_blank" rel="noopener">其他历史内容查看文档（25年8月后停止更新）</a>
         </p>
       </div>
     </div>
@@ -810,7 +876,7 @@
     <div class="wm-card">
       <div class="wm-title">
         <span class="wm-icon"><i data-lucide="sparkles" class="w-4 h-4" style="color:#93c5fd;"></i></span>
-        Merchant OS · 仅供个人原型展示
+        Advertiser OS · 仅供个人原型展示
       </div>
       <div class="wm-text">
         <div>联系：myrawzm0406@163.com · WeChat 15301052620</div>
@@ -847,7 +913,7 @@
       }]
     });
 
-    // 桑基图：蓝色系 + 渠道递减
+    // 桑基图
     const sankeyChart = echarts.init(document.getElementById('sankeyContainer'));
     const blue = {
       a: '#0B5FFF',
